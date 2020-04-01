@@ -1,0 +1,92 @@
+parameters:
+  pool: Linux
+  configuration: Release
+  projects: '**/*.csproj'
+  nugetConfig: ''
+  preRestore: []
+  preBuild: []
+  postBuild: []
+  prePack: []
+  postPack: []
+  variables: {}
+  installSdk: true
+  sdkVersion: ''
+  publishArtifacts: true
+  artifactName: $(Build.DefinitionName)
+  artifactsDirectory: $(Build.StagingDirectory)
+  verbosity: Normal
+
+jobs:
+- job: pack_dotnet_nuget_package
+  displayName: Build and Pack
+
+  variables:
+    ${{ insert }}: ${{ parameters.variables }}
+    _BuildConfiguration: ${{ parameters.configuration }}
+    _ArtifactName: ${{ parameters.artifactName }}
+    _StagingDirectory: ${{ parameters.artifactsDirectory }}
+
+  steps:
+  - checkout: self
+    clean: true
+    
+  - ${{ if eq(parameters.installSdk, true) }}:
+    - task: UseDotNet@2
+      displayName: Install .NET Core
+      inputs:
+        packageType: sdk
+        ${{ if eq(parameters.sdkVersion, '') }}:
+          useGlobalJson: true
+        ${{ if ne(parameters.sdkVersion, '') }}:
+          version: ${{ parameters.sdkVersion }}
+
+  - ${{ parameters.preRestore }}
+
+  - task: DotNetCoreCLI@2
+    displayName: .NET Restore
+    inputs:
+      command: restore
+      projects: ${{ parameters.projects }}
+      ${{ if ne(parameters.nugetConfig, '') }}:
+        feedsToUse: config
+        nugetConfigPath: ${{ parameters.nugetConfig }}
+      arguments: >
+        --configuration $(_BuildConfiguration)
+      verbosityRestore: ${{ parameters.verbosity }}
+
+  - ${{ parameters.preBuild }}
+
+  - task: DotNetCoreCLI@2
+    displayName: .NET Core Build
+    inputs:
+      command: build
+      projects: ${{ parameters.projects }}
+      arguments: >
+        --no-restore
+        --configuration $(_BuildConfiguration)
+
+  - ${{ parameters.postBuild }}
+
+  - ${{ parameters.prePack }}
+
+  - task: DotNetCoreCLI@2
+    displayName: .NET Core Pack
+    inputs:
+      command: pack
+      configuration: $(_BuildConfiguration)
+      nobuild: true
+      arguments: >
+        --no-restore
+        --output $(_StagingDirectory)
+      versioningScheme: off
+      verbosityPack: ${{ parameters.verbosity }}
+
+  - ${{ parameters.postPack }}
+
+  - ${{ if eq(parameters.publishArtifacts, true) }}:
+    - task: PublishBuildArtifacts@1
+      displayName: Publish Build Artifacts
+      condition: succeeded()
+      inputs:
+        PathtoPublish: $(_StagingDirectory)
+        ArtifactName: $(_ArtifactName)

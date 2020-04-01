@@ -1,0 +1,45 @@
+parameters:
+  configuration: Release
+  projects: '**/[Tt]est?(s)/**/*.csproj|**/*[Tt]est*.csproj'
+  testFilter: 'Unit'
+  buildProjects: true
+  collectCodeCoverage: true
+  reportDirectory: $(Agent.TempDirectory)
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: .NET Core Test
+  inputs:
+    command: test
+    projects: ${{ parameters.projects }}
+    arguments: >
+      ${{ if ne(parameters.buildProjects, true) }}
+        --no-build
+        --no-restore
+      --configuration ${{ parameters.configuration }}
+      --filter Category=${{ parameters.testFilter }}
+      ${{ if eq(parameters.collectCodeCoverage, true) }}
+        --collect:"XPlat Code Coverage"
+    publishTestResults: true
+
+${{ if eq(parameters.collectCodeCoverate, true) }}:
+  - powershell: dotnet tool install -g dotnet-reportgenerator-globaltool
+    displayName: Install Report Generator
+    condition: always()
+
+  - powershell: |
+      dotnet tool run reportgenerator `
+        "-reports:${{ parameters.reportDirectory }}/**/coverage.cobertura.xml" `
+        "-targetdir:${{ parameters.reportDirectory }}/coverlet/reports" `
+        "-reporttypes:Cobertura"
+    displayName: Generate Code Coverage Report
+    condition: always()
+    continueOnError: true
+
+  - task: PublishCodeCoverageResults@1
+    displayName: Publish Code Coverage Results
+    condition: always()
+    inputs:
+      codeCoverageTool: cobertura
+      summaryFileLocation: ${{ parameters.reportDirectory }}/**/Cobertura.xml
+      failIfCoverageEmpty: false
