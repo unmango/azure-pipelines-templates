@@ -6,10 +6,12 @@ steps:
   - bash: |
       RUNS_URL=${SYSTEM_TEAMFOUNDATIONCOLLECTIONURI}${SYSTEM_TEAMPROJECT}/_apis/pipelines/${SYSTEM_DEFINITIONID}/runs?api-version=5.1-preview
       echo $RUNS_URL
-      echo "Validating YAML:\n${{ template }}"
+      TEMPLATE=`cat ${{ template.name }}`
+      echo "Validating YAML:\n$TEMPLATE"
       curl --user PAT:$(System.AccessToken) \
         -sS \
         --header "Content-Type: application/json" \
         --request POST \
-        --data '{"PreviewRun": true,"YamlOverride":"${{ template }}"}' \
+        --data '{"PreviewRun": true,"YamlOverride":"$TEMPLATE"}' \
         $RUNS_URL
+    displayName: Validate ${{ template.name }}

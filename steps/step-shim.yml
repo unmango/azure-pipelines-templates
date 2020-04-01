@@ -1,6 +1,0 @@
-parameters:
-  template: ''
-  parameters: []
-
-steps:
-- template: ${{ parameters.template }}
