@@ -10,9 +10,12 @@ steps:
 - template: /steps/validate-template.yml
   parameters:
     templates:
-    - name: ./steps/dotnet/test.yml
+    - name: /steps/dotnet/test.yml
       type: step
+      parameters:
+      - blah: blah
     
-    - name: ./jobs/dotnet/nuget-package.yml
+    - name: /jobs/dotnet/nuget-package.yml
       type: job
-
+      parameters:
+      - blah: blah
