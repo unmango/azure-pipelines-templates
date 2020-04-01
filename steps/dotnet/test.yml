@@ -23,15 +23,15 @@ steps:
     publishTestResults: true
 
 ${{ if eq(parameters.collectCodeCoverate, true) }}:
-  - powershell: dotnet tool install -g dotnet-reportgenerator-globaltool
+  - script: dotnet tool install -g dotnet-reportgenerator-globaltool
     displayName: Install Report Generator
     condition: always()
 
-  - powershell: |
-      dotnet tool run reportgenerator `
-        "-reports:${{ parameters.reportDirectory }}/**/coverage.cobertura.xml" `
-        "-targetdir:${{ parameters.reportDirectory }}/coverlet/reports" `
-        "-reporttypes:Cobertura"
+  - script: >
+      dotnet tool run reportgenerator
+        -reports:${{ parameters.reportDirectory }}/**/coverage.cobertura.xml
+        -targetdir:${{ parameters.reportDirectory }}/coverlet/reports
+        -reporttypes:Cobertura
     displayName: Generate Code Coverage Report
     condition: always()
     continueOnError: true
