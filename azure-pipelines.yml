@@ -1,0 +1,15 @@
+trigger:
+- master
+
+pr:
+- master
+
+steps:
+- template: /steps/validate-template.yml
+  parameters:
+    templates:
+    - |
+      steps:
+      - template: /steps/step-shim.yml
+        parameters:
+          template: /steps/dotnet/test.yml
