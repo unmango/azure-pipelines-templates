@@ -4,11 +4,12 @@ parameters:
 steps:
 - ${{ each template in parameters.templates }}:
   - bash: |
-    RUNS_URL=${SYSTEM_TEAMFOUNDATIONCOLLECTIONURI}${SYSTEM_TEAMPROJECT}/_apis/pipelines/${SYSTEM_DEFINITIONID}/runs?api-version=5.1-preview
-    echo $RUNS_URL
-    curl --user PAT:$(System.AccessToken) \
-      -sS \
-      --header "Content-Type: application/json" \
-      --request POST \
-      --data '{"PreviewRun": true,"YamlOverride":"${{ template }}"}' \
-      $RUNS_URL
+      RUNS_URL=${SYSTEM_TEAMFOUNDATIONCOLLECTIONURI}${SYSTEM_TEAMPROJECT}/_apis/pipelines/${SYSTEM_DEFINITIONID}/runs?api-version=5.1-preview
+      echo $RUNS_URL
+      echo "template: ${{ template }}"
+      curl --user PAT:$(System.AccessToken) \
+        -sS \
+        --header "Content-Type: application/json" \
+        --request POST \
+        --data '{"PreviewRun": true,"YamlOverride":"${{ template }}"}' \
+        $RUNS_URL
