@@ -3,6 +3,7 @@ parameters:
   configuration: Release
   projects: '**/*.csproj'
   nugetConfig: ''
+  externalFeedCredentials: ''
   preRestore: []
   preBuild: []
   postBuild: []
@@ -50,6 +51,8 @@ jobs:
       ${{ if ne(parameters.nugetConfig, '') }}:
         feedsToUse: config
         nugetConfigPath: ${{ parameters.nugetConfig }}
+      ${{ if ne(parameters.externalFeedCredentials, '') }}:
+        externalFeedCredentials: ${{ parameters.externalFeedCredentials }}
       arguments: >
         --configuration $(_BuildConfiguration)
       verbosityRestore: ${{ parameters.verbosity }}
