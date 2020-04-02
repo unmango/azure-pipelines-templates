@@ -33,9 +33,9 @@ steps:
 
   - script: >
       dotnet tool run reportgenerator
-        "-reports:$REPORT_DIRECTORY/**/coverage.cobertura.xml"
-        "-targetdir:$REPORT_DIRECTORY/coverlet/reports"
-        "-reporttypes:Cobertura"
+      "-reports:$REPORT_DIRECTORY/**/coverage.cobertura.xml"
+      "-targetdir:$REPORT_DIRECTORY/coverlet/reports"
+      "-reporttypes:Cobertura"
     displayName: Generate Code Coverage Report
     condition: always()
     continueOnError: true
