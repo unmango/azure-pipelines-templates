@@ -23,7 +23,9 @@ jobs:
     condition: ${{ parameters.condition }}
 
   variables:
-    ${{ insert }}: ${{ parameters.variables }}
+    ${{ if parameters.variables }}:
+      ${{ insert }}: ${{ parameters.variables }}
+      
     _DotNetSdkVersion: ${{ parameters.dotnetSdkVersion }}
 
   environment: ${{ parameters.environment }}
