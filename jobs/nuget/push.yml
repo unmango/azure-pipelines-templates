@@ -1,7 +1,7 @@
 parameters:
   pool: 'Linux'
   environment: ''
-  variables: []
+  variables: {}
   artifact: ''
   feed: ''
   dependsOn: ''
@@ -23,9 +23,7 @@ jobs:
     condition: ${{ parameters.condition }}
 
   variables:
-    ${{ if parameters.variables }}:
-      ${{ insert }}: ${{ parameters.variables }}
-      
+    ${{ insert }}: ${{ parameters.variables }}
     _DotNetSdkVersion: ${{ parameters.dotnetSdkVersion }}
 
   environment: ${{ parameters.environment }}
