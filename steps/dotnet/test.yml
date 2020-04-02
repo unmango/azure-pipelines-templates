@@ -23,7 +23,7 @@ steps:
       --collect:"XPlat Code Coverage"
     publishTestResults: true
 
-- ${{ if eq(parameters.collectCodeCoverate, true) }}:
+- ${{ if eq(parameters.collectCodeCoverage, true) }}:
   - script: dotnet tool install -g dotnet-reportgenerator-globaltool
     displayName: Install Report Generator
     condition: always()
