@@ -9,32 +9,35 @@ parameters:
 steps:
 - task: DotNetCoreCLI@2
   displayName: .NET Core Test
+  env:
+    CONFIGURATION: ${{ parameters.configuration }}
+    TEST_FILTER: ${{ parameters.testFilter }}
   inputs:
     command: test
     projects: ${{ parameters.projects }}
     arguments: >
-      ${{ if ne(parameters.buildProjects, true) }}
-        --no-build
-        --no-restore
-      --configuration ${{ parameters.configuration }}
-      --filter Category=${{ parameters.testFilter }}
-      ${{ if eq(parameters.collectCodeCoverage, true) }}
-        --collect:"XPlat Code Coverage"
+      --no-build
+      --no-restore
+      --configuration $CONFIGURATION
+      --filter Category=$TEST_FILTER
+      --collect:"XPlat Code Coverage"
     publishTestResults: true
 
-${{ if eq(parameters.collectCodeCoverate, true) }}:
+- ${{ if eq(parameters.collectCodeCoverate, true) }}:
   - script: dotnet tool install -g dotnet-reportgenerator-globaltool
     displayName: Install Report Generator
     condition: always()
 
   - script: >
       dotnet tool run reportgenerator
-        -reports:${{ parameters.reportDirectory }}/**/coverage.cobertura.xml
-        -targetdir:${{ parameters.reportDirectory }}/coverlet/reports
+        -reports:$REPORT_DIRECTORY/**/coverage.cobertura.xml
+        -targetdir:$REPORT_DIRECTORY/coverlet/reports
         -reporttypes:Cobertura
     displayName: Generate Code Coverage Report
     condition: always()
     continueOnError: true
+    env:
+      REPORT_DIRECTORY: ${{ parameters.reportDirectory }}
 
   - task: PublishCodeCoverageResults@1
     displayName: Publish Code Coverage Results
