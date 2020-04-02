@@ -16,6 +16,7 @@ steps:
   inputs:
     command: test
     projects: ${{ parameters.projects }}
+    # TODO: Allow building projects here
     arguments: >
       --no-build
       --no-restore
