@@ -10,7 +10,7 @@ parameters:
 
 jobs:
 - deployment:
-  displayName: Deploy ${{ parameters.artifact }} to ${{ parameters.environment }}
+  displayName: Deploy $[ parameters.artifact ] to ${{ parameters.environment }}
   pool: ${{ parameters.pool }}
 
   workspace:
