@@ -88,9 +88,7 @@ jobs:
   - ${{ parameters.postPack }}
 
   - ${{ if eq(parameters.publishArtifacts, true) }}:
-    - task: PublishBuildArtifacts@1
-      displayName: Publish Build Artifacts
+    - publish: $(_StagingDirectory)
+      displayName: Publish Artifacts
       condition: succeeded()
-      inputs:
-        PathtoPublish: $(_StagingDirectory)
-        ArtifactName: $(_ArtifactName)
+      artifact: $(_ArtifactName)
