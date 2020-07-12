@@ -10,9 +10,6 @@ parameters:
 steps:
 - task: DotNetCoreCLI@2
   displayName: .NET Core Test
-  env:
-    CONFIGURATION: ${{ parameters.configuration }}
-    TEST_FILTER: ${{ parameters.testFilter }}
   inputs:
     command: test
     projects: ${{ parameters.projects }}
@@ -20,8 +17,8 @@ steps:
     arguments: >
       --no-build
       --no-restore
-      --configuration $(CONFIGURATION)
-      --filter Category=$(TEST_FILTER)
+      --configuration ${{ parameters.configuration }}
+      --filter Category=${{ parameters.testFilter }}
       --collect:"XPlat Code Coverage"
       --verbosity detailed
     publishTestResults: true
