@@ -20,8 +20,8 @@ steps:
     arguments: >
       --no-build
       --no-restore
-      --configuration $CONFIGURATION
-      --filter Category=$TEST_FILTER
+      --configuration $(CONFIGURATION)
+      --filter Category=$(TEST_FILTER)
       --collect:"XPlat Code Coverage"
       --verbosity detailed
     publishTestResults: true
