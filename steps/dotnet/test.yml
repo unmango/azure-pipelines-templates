@@ -23,6 +23,7 @@ steps:
       --configuration $CONFIGURATION
       --filter Category=$TEST_FILTER
       --collect:"XPlat Code Coverage"
+      --verbosity detailed
     publishTestResults: true
 
 - ${{ if eq(parameters.collectCodeCoverage, true) }}:
