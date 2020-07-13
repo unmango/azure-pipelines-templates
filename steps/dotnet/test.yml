@@ -18,7 +18,7 @@ steps:
       --no-build
       --no-restore
       --configuration ${{ parameters.configuration }}
-      --filter Category=${{ parameters.testFilter }}
+      --filter "Category=${{ parameters.testFilter }}"
       --collect:"XPlat Code Coverage"
       --verbosity detailed
     publishTestResults: true
