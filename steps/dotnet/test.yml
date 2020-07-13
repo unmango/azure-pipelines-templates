@@ -1,6 +1,6 @@
 parameters:
   configuration: Release
-  projects: '**/[Tt]est/**/*.csproj|**/*[Tt]est*.csproj'
+  projects: '+(**/[Tt]est/**/*.csproj|**/*[Tt]est*.csproj)'
   testFilter: 'Unit'
   buildProjects: true
   collectCodeCoverage: true
@@ -10,9 +10,6 @@ parameters:
 steps:
 - task: DotNetCoreCLI@2
   displayName: .NET Core Test
-  env:
-    CONFIGURATION: ${{ parameters.configuration }}
-    TEST_FILTER: ${{ parameters.testFilter }}
   inputs:
     command: test
     projects: ${{ parameters.projects }}
@@ -20,8 +17,8 @@ steps:
     arguments: >
       --no-build
       --no-restore
-      --configuration $CONFIGURATION
-      --filter Category=$TEST_FILTER
+      --configuration ${{ parameters.configuration }}
+      --filter "Category=${{ parameters.testFilter }}"
       --collect:"XPlat Code Coverage"
     publishTestResults: true
 
@@ -33,14 +30,12 @@ steps:
 
   - script: >
       dotnet tool run reportgenerator
-      "-reports:$REPORT_DIRECTORY/**/coverage.cobertura.xml"
-      "-targetdir:$REPORT_DIRECTORY/coverlet/reports"
+      "-reports:${{ parameters.reportDirectory }}/**/coverage.cobertura.xml"
+      "-targetdir:${{ parameters.reportDirectory }}/coverlet/reports"
       "-reporttypes:Cobertura"
     displayName: Generate Code Coverage Report
     condition: always()
     continueOnError: true
-    env:
-      REPORT_DIRECTORY: ${{ parameters.reportDirectory }}
 
   - task: PublishCodeCoverageResults@1
     displayName: Publish Code Coverage Results
