@@ -30,14 +30,12 @@ steps:
 
   - script: >
       dotnet tool run reportgenerator
-      "-reports:$REPORT_DIRECTORY/**/coverage.cobertura.xml"
-      "-targetdir:$REPORT_DIRECTORY/coverlet/reports"
+      "-reports:${{ parameters.reportDirectory }}/**/coverage.cobertura.xml"
+      "-targetdir:${{ parameters.reportDirectory }}/coverlet/reports"
       "-reporttypes:Cobertura"
     displayName: Generate Code Coverage Report
     condition: always()
     continueOnError: true
-    env:
-      REPORT_DIRECTORY: ${{ parameters.reportDirectory }}
 
   - task: PublishCodeCoverageResults@1
     displayName: Publish Code Coverage Results
