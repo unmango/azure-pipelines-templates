@@ -20,7 +20,6 @@ steps:
       --configuration ${{ parameters.configuration }}
       --filter "Category=${{ parameters.testFilter }}"
       --collect:"XPlat Code Coverage"
-      --verbosity detailed
     publishTestResults: true
 
 - ${{ if eq(parameters.collectCodeCoverage, true) }}:
