@@ -1,6 +1,6 @@
 parameters:
   configuration: Release
-  projects: '**/[Tt]est/**/*.csproj|**/*[Tt]est*.csproj'
+  projects: '+(**/[Tt]est/**/*.csproj|**/*[Tt]est*.csproj)'
   testFilter: 'Unit'
   buildProjects: true
   collectCodeCoverage: true
